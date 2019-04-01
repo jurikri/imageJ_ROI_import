@@ -1,0 +1,4 @@
+for neuronNum = 1:size(Coor,1)
+    tmp = cell2mat(Coor(neuronNum,1));
+    xlswrite([nam '.xlsx'], tmp, neuronNum)
+end
