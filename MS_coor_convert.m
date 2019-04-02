@@ -1,7 +1,9 @@
 clear; clc; close all;
 
 %% select pathway
-file_nm = []; path = []; [file_nm, path] = uigetfile(fullfile(path, '*.xls')); filepath = [path, file_nm];
+try load .dir.mat; catch; dir_nm = [cd(), filesep];  end     
+[file_nm, dir_nm] = uigetfile(fullfile(dir_nm, '*.xlsx'));
+filepath = [dir_nm, file_nm];
 
 %% transfer Coor
 cnt = 0;
@@ -17,7 +19,7 @@ end
 ijm = string(zeros((size(Coor, 1)*2)+2,1));
 
 %% make save folder, varience
-filepath = [path 'save'];
+filepath = [dir_nm file_nm '_save'];
 if (exist(filepath, 'dir') == 0)
     % disp(['Made a result directory at :', newline, char(9), filepath]);
     mkdir(filepath);
@@ -37,10 +39,10 @@ filepath2 = strrep(filepath,'\','/');
 
 for ROINum = 1:size(Coor, 1)
     matrix1 = cell2mat(Coor(ROINum,1));
-%     matrix2 = transpose(matrix1);
+    matrix2 = transpose(matrix1);
     
     filename = [filepath2 '/' num2str(ROINum) '.csv'];
-    csvwrite(filename, matrix1)
+    csvwrite(filename, matrix2)
    
     tmp =  ['run("XY Coordinates... ", "open=[' filename ']");'];
     ijm(ROINum*2-1+2,1) = tmp;
@@ -48,34 +50,8 @@ for ROINum = 1:size(Coor, 1)
     ijm(ROINum*2-0+2,1) = tmpadd;
 end
 
-writematrix(ijm,[path 'imj.csv']);
+writematrix(ijm,[dir_nm 'imj.csv']);
 
 %%
 
 disp('done')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
