@@ -16,7 +16,7 @@ while 1
     end
 end
  
-ijm = string(zeros((size(Coor, 1)*2)+2,1));
+ijm = char(zeros((size(Coor, 1)*2)+2,100));
 
 %% make save folder, varience
 filepath = [dir_nm file_nm '_save'];
@@ -28,10 +28,12 @@ end
 
 %% basic setup for ijm
 tmp = 'roiManager("Show All with labels");';
-ijm(1,1) = tmp;
+ijm(1,1:size(tmp,2)) = tmp;
 tmp = 'run("ROI Manager...");';
-ijm(2,1) = tmp;
+ijm(2,1:size(tmp,2)) = tmp;
 tmpadd = 'roiManager("Add");';
+
+dlmwrite('test.txt', ijm, 'delimiter','');
 
 %% save csv, for each ROI
 
@@ -45,9 +47,9 @@ for ROINum = 1:size(Coor, 1)
     csvwrite(filename, matrix2)
    
     tmp =  ['run("XY Coordinates... ", "open=[' filename ']");'];
-    ijm(ROINum*2-1+2,1) = tmp;
+    ijm(ROINum*2-1+2,1:size(tmp,2)) = tmp;
     
-    ijm(ROINum*2-0+2,1) = tmpadd;
+    ijm(ROINum*2-0+2,1:size(tmpadd,2)) = tmpadd;
 end
 
 writematrix(ijm,[dir_nm 'imj.csv']);
