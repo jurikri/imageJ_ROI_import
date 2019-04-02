@@ -19,7 +19,7 @@ ijm = string(zeros((size(Coor, 1)*2)+2,1));
 %% make save folder, varience
 filepath = [path 'save'];
 if (exist(filepath, 'dir') == 0)
-    disp(['Made a result directory at :', newline, char(9), filepath]);
+    % disp(['Made a result directory at :', newline, char(9), filepath]);
     mkdir(filepath);
 end
 
