@@ -1,0 +1,4 @@
+1. MS_coor_converter.m 을 실행하고 분석하고자 하는 ID.tif.xlsx 파일을 선택한다.
+2. imageJ (ij) 를 실행하고, 분석하고자 하는 동영상을 로드한다.
+3. imageJ에서 '[' 를 눌러 code 입력창을 뛰우고, ID.tif.xlsx 파일과 동일 위치에 있는 imj.csv의 내용을 복사 붙여넣기 한다.
+4. code 입력창에서 language -> ij1 macro를 선택한 뒤, Run을 누른다. 
