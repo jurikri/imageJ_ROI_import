@@ -33,8 +33,6 @@ tmp = 'run("ROI Manager...");';
 ijm(2,1:size(tmp,2)) = tmp;
 tmpadd = 'roiManager("Add");';
 
-dlmwrite('test.txt', ijm, 'delimiter','');
-
 %% save csv, for each ROI
 
 filepath2 = strrep(filepath,'\','/');
@@ -52,7 +50,7 @@ for ROINum = 1:size(Coor, 1)
     ijm(ROINum*2-0+2,1:size(tmpadd,2)) = tmpadd;
 end
 
-writematrix(ijm,[dir_nm 'imj.csv']);
+dlmwrite([dir_nm 'imj.txt'], ijm, 'delimiter','');
 
 %%
 
