@@ -1,8 +1,10 @@
 %% clear the workspace and select data 
-clc; close all; cnt = 0;
+clear; clc; close all; 
 
+%% 20200210 MSBak
 %% select pathway
-for i = 1:2 % 몇개할건지 적음.
+cnt = 0;
+for i = 1:1 % 몇개할건지 적음.
     cnt = cnt +1;
     try load .dir.mat; catch; dir_nm = [cd(), filesep];  end     
     [file_nm, dir_nm] = uigetfile(fullfile(dir_nm, '*.tif'));
@@ -11,7 +13,7 @@ for i = 1:2 % 몇개할건지 적음.
     path_save{cnt,1} = filepath;
 end
 
-%%
+%% msbak, framefix
 for cnt = 1:size(path_save,1)
     filepath = cell2mat(path_save(cnt,1))
     savepath = [filepath '_fix.tif'];
@@ -19,34 +21,52 @@ for cnt = 1:size(path_save,1)
     %% detect and save
     clear saveFrame
     tiff_info = imfinfo(filepath);
+    msplot = zeros(1,size(tiff_info,1));
     for frame = 1:size(tiff_info,1)
         disp([num2str(frame) ' / ' num2str(size(tiff_info,1))])
         msFrame = uint16(imread(filepath, frame));
-        tmp = sum(msFrame,2);
-        msplot(frame) = sum(find(~tmp)>0);
-
-        saveFrame = uint16(imread(filepath,frame));
-        if msplot(frame) > 15
-            saveFrame = buffter;
+        
+        c1 = isnan(mean(mean(msFrame)));
+        c2 = min(min(msFrame)) < -100000;
+        c3 = max(max(msFrame)) > +100000;
+        
+        row_save = zeros(1, size(msFrame, 1)-1);
+        for row = 1:size(msFrame, 1)-1
+            row_save(1,row) = mean(abs(msFrame(row,:)-msFrame(row+1,:)));
         end
+        c4 = max(row_save) > 10000;
+
+        if c1 | c2 | c3 | c4
+            if frame == 1
+                disp('1번 frame에 문제가 있습니다. 동영상 확인후 다시 하세요.')
+                exit
+            end
+            saveFrame = buffter;
+            msplot(1, frame) = 1;
+        else
+            saveFrame = msFrame;
+        end
+        
         imwrite(saveFrame, savepath, 'WriteMode', 'append', 'Compression', 'none')
-        buffter = saveFrame;
+        buffter = msFrame;
     end
 
-    plot(msplot)
-    find(msplot > 15)
-    
+    for frame = 1:size(tiff_info,1)
+        if msplot(1, frame) == 1
+            disp(frame)
+            disp('수정되었습니다.')
+        end
+    end
     path_save2{cnt,1} = savepath;
 end
 
-%%
-for cnt = 1:size(path_save2,1)
-clearvars -except oasis_folder oasis_loaded cnmfe_folder cnmfe_loaded cnt path_save2
+for cnt = 1:size(path_save,1)
+    nam = cell2mat(path_save2(cnt,1));
+    disp(nam)
 
 %% choose data 
 neuron = Sources2D(); 
-nam = cell2mat(path_save2(cnt,1));
-% nam = []% this demo data is very small, here we just use it as an example
+% nam = './data_2p.tif';          % this demo data is very small, here we just use it as an example
 nam = neuron.select_data(nam);  %if nam is [], then select data interactively 
 
 %% parameters  
@@ -210,7 +230,7 @@ neuron.save_workspace();
 %% show neuron contours  
 Coor = neuron.show_contours(); 
 
-% %% create a video for displaying the 
+%% create a video for displaying the 
 % amp_ac = 5000; 
 % range_ac = [0, 5000]; 
 % range_Y = [0, 10000]; 
@@ -219,20 +239,17 @@ Coor = neuron.show_contours();
 %% save neurons shapes 
 neuron.save_neurons(); 
 
-%% exp name find
+%% save neurons shapes 
+neuron.save_neurons(); 
 
-% tmp = strfind(nam,'\');
-% se = nam(tmp(size(tmp,2))+1:end);
-% filepath = nam(1:tmp(size(tmp,2)));
-
+%% msbak, for imageJ import
 for neuronNum = 1:size(Coor,1)
     tmp = cell2mat(Coor(neuronNum,1));
     xlswrite([nam '.xlsx'], tmp, neuronNum)
 end
-    
-% %% save neurons shapes 
-% neuron.save_neurons(); 
+
 end
+
 
 
 
