@@ -1,0 +1,24 @@
+bg_model = 'svd';  % model of the background {'ring', 'svd'(default), 'nmf'}
+>
+bg_model = 'ring';  % model of the background {'ring', 'svd'(default), 'nmf'}
+
+min_pnr =10;       % minimum peak-to-noise ratio for a seeding pixel
+>
+min_pnr =6;       % minimum peak-to-noise ratio for a seeding pixel
+
+
+min_pixel = 2^2;      % minimum number of nonzero pixels for each neuron
+>
+min_pixel = 8^2;      % minimum number of nonzero pixels for each neuron
+
+%% create a video for displaying the 
+>
+disable
+
+
+
+
+
+
+
+
